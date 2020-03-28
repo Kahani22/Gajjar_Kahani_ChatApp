@@ -1,7 +1,9 @@
 // imports always go first - if we're importing anything
 import ChatMessage from "./modules/ChatMessage.js";
 
-const socket = io();
+const socket = io(),
+        sendMessage = new Audio("../media/sharp.mp3"),
+        getMessage = new Audio("../media/anxious.mp3");
 
 
 //the packet is whatever data we sebd through with the connect event
@@ -22,6 +24,13 @@ function showDisconnectMessage() {
 //push the message like 'posting'
 function appendMessage(message) {
     vm.messages.push(message);
+    if(message.id === socket.id){
+        console.log('my message');
+        sendMessage.play();
+    }else{
+        console.log('other people sent message');
+        getMessage.play();
+    }
 } 
 
 const vm = new Vue({
@@ -40,7 +49,7 @@ const vm = new Vue({
             // double pipe means 'or', if there is no first value, then use whatever comes after the double pipe
             socket.emit('chat_message', {
                 content: this.message,
-                name: this.nickname || "Anonymous"
+                name: this.nickname || "Anon"
             })
 
             this.message = ""; // make the msg box blank after hitting submit
